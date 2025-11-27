@@ -26,12 +26,12 @@ const slideIn = keyframes`
 
 const wrapperStyles = css`
     background: rgba(255, 255, 255, 0.95);
-    position: fixed;
+    position: absolute;
     right: ${theme.space[5]};
     width: 320px;
     border-radius: ${theme.radius.lg};
     box-shadow: ${theme.shadows.lg}, 0 0 40px rgba(99, 102, 241, 0.15);
-    z-index: 999999;
+    z-index: ${Number.MAX_SAFE_INTEGER};
     backdrop-filter: blur(20px);
     -webkit-backdrop-filter: blur(20px);
     border: 1px solid rgba(255, 255, 255, 0.5);
