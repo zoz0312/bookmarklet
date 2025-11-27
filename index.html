@@ -141,8 +141,8 @@
     <h2>설치 방법</h2>
     <p>아래 링크를 <strong>마우스로 드래그하여</strong> 북마크바에 놓으세요:</p>
     <div style="margin: 20px 0;">
-        <a class="bookmarklet-link" draggable="true" href="javascript:void(0)" id="bookmarklet-link">
-            📌 My Bookmarklet
+        <a class="bookmarklet-link" href="javascript:void(0)" id="bookmarklet-link">
+            📌 HDW Bookmarklet
         </a>
     </div>
 
@@ -192,48 +192,20 @@
 
 <script>
     async function initializeBookmarklet() {
-        const link = document.getElementById('bookmarklet-link')
-        if (!link) return
+        const link = document.getElementById('bookmarklet-link');
+        if (!link) return;
 
-        try {
-            const res = await fetch('/dist/bookmarklet.iife.js')
-            if (!res.ok) {
-                alert('dist/bookmarklet.iife.js를 찾을 수 없습니다.')
-                return
-            }
+        const response = await fetch('/dist/bookmarklet.iife.js');
+        if (!response.ok) return;
 
-            let code = await res.text()
-
-            const bookmarkletUrl = 'javascript:' + code
-
-            console.log('Bookmarklet Length:', bookmarkletUrl.length)
-
-            link.href = bookmarkletUrl
-
-            link.addEventListener('dragstart', (e) => {
-                const dt = e.dataTransfer
-                if (!dt) return
-                dt.effectAllowed = 'copy'
-                dt.setData('text/plain', bookmarkletUrl)
-                dt.setData('text/uri-list', bookmarkletUrl)
-                dt.setData('text/html', '<a href="' + bookmarkletUrl + '">📌 My Bookmarklet</a>')
-            })
-
-            link.addEventListener('click', (e) => {
-                e.preventDefault()
-                const s = document.createElement('script')
-                s.textContent = code
-                document.body.appendChild(s)
-            })
-        } catch (err) {
-            alert('Bookmarklet 생성 실패: ' + err.message)
-        }
+        const code = await response.text();
+        link.href = `javascript:${encodeURIComponent(code)}`;
     }
 
     if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', initializeBookmarklet)
+        document.addEventListener('DOMContentLoaded', initializeBookmarklet);
     } else {
-        initializeBookmarklet()
+        initializeBookmarklet();
     }
 </script>
 </body>
