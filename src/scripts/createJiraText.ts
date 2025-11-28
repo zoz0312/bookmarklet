@@ -71,10 +71,10 @@ function copyToClipboard(text: string) {
 }
 
 const STATUS_GROUPS: { key: StatusGroupKey; label: string; statuses: string[] }[] = [
-	{key: 'done', label: '배포 완료', statuses: ['Deployed', 'Ready to Deploy']},
-	{key: 'qa', label: 'QA 전달', statuses: ['Need QA', 'In QA']},
-	{key: 'review', label: '리뷰 전달', statuses: ['In Review']},
-	{key: 'progress', label: '진행중', statuses: ['In Progress']},
+	{key: 'done', label: '배포 완료', statuses: ['Deployed', '종료']},
+	{key: 'qa', label: 'QA', statuses: ['Need QA', 'In QA', 'Ready to Deploy']},
+	{key: 'review', label: '리뷰 전달', statuses: ['In Review', '검토 중']},
+	{key: 'progress', label: '진행중', statuses: ['In Progress', '진행 중']},
 	{key: 'backlog', label: 'Backlog', statuses: ['Backlog']},
 ];
 
