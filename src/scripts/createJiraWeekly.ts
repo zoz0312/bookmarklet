@@ -1,12 +1,13 @@
 import type { MenuItem } from "../types.ts";
+import { collectAllIssueRows, ensureCorrectJiraPage, extractIssueKey } from './utils';
 
 type StatusGroupKey = 'done' | 'qa' | 'review' | 'progress' | 'backlog' | 'others';
 
 
-export const createJiraText: MenuItem = {
-	id: 'jira',
-	label: '모든 업무 JQL 지라 복사',
-	icon: '👐',
+export const createJiraWeekly: MenuItem = {
+	id: 'jira-weekly',
+	label: '위클리 지라 복사',
+	icon: '📅',
 	onClick: handleJiraExportClick
 };
 
@@ -16,13 +17,6 @@ type JiraIssue = {
 	status: string;
 };
 
-function collectIssueRows(): HTMLTableRowElement[] {
-	const nodeList = document.querySelectorAll<HTMLTableRowElement>(
-		'tr[data-testid="native-issue-table.ui.issue-row"]'
-	);
-	return Array.from(nodeList);
-}
-
 function createIssueFromRow(row: HTMLTableRowElement): JiraIssue | null {
 	const key = extractIssueKey(row);
 	const summary = extractIssueSummary(row);
@@ -31,14 +25,6 @@ function createIssueFromRow(row: HTMLTableRowElement): JiraIssue | null {
 	if (!key || !summary || !status) return null;
 	return {key, summary, status};
 }
-
-function extractIssueKey(row: HTMLTableRowElement): string | null {
-	const keyAnchor = row.querySelector<HTMLAnchorElement>(
-		'[data-testid="native-issue-table.common.ui.issue-cells.issue-key.issue-key-cell"]'
-	);
-	return keyAnchor?.textContent?.trim() ?? null;
-}
-
 function extractIssueSummary(row: HTMLTableRowElement): string | null {
 	const summarySpan = row.querySelector<HTMLSpanElement>(
 		'[data-testid="native-issue-table.common.ui.issue-cells.issue-summary.issue-summary-cell"]'
@@ -147,8 +133,12 @@ function formatIssuesForReport(issues: JiraIssue[]): string {
 	return lines.join('\r\n');
 }
 
-function handleJiraExportClick() {
-	const rows = collectIssueRows();
+async function handleJiraExportClick() {
+  if (!ensureCorrectJiraPage("")) {
+    return;
+  }
+
+  const rows = await collectAllIssueRows();
 	const issues = rows
 		.map(createIssueFromRow)
 		.filter((issue): issue is JiraIssue => issue !== null);
@@ -157,4 +147,3 @@ function handleJiraExportClick() {
 	copyToClipboard(text);
 	alert(`정제된 이슈 ${issues.length}개를 클립보드에 복사했습니다.`);
 }
-
